@@ -1,16 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Task } from 'src/app/Task';
-import { TASKS } from 'src/app/mock-tasks';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  constructor() {}
+  private apiUrl = 'http://localhost:5000/tasks';
+
+  constructor(private readonly httpClient: HttpClient) {}
 
   getTasks(): Observable<Task[]> {
-    const tasks = of(TASKS);
-    return tasks;
+    return this.httpClient.get<Task[]>(this.apiUrl);
+  }
+
+  deleteTask(task: Task): Observable<Task> {
+    const url = `${this.apiUrl}/${task.id}`;
+    return this.httpClient.delete<Task>(url);
   }
 }
